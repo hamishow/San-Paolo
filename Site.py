@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
+import matplotlib as plt
 
 # Carregar o arquivo Excel
 df = pd.read_excel('C:/Program Files (x86)/SanPaolo/Base.Athenas.Novembro.xlsx', sheet_name='base athenas')
