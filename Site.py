@@ -59,17 +59,28 @@ def cadastrar_receita():
     st.subheader('Cadastrar Receita')
 
     nome_receita = st.text_input('Nome da Receita')
-    num_ingredientes = st.number_input('Número de Ingredientes', min_value=1, step=1)
 
-    ingredientes = []
-    for i in range(num_ingredientes):
+    # Criar um DataFrame vazio para armazenar os ingredientes
+    df_ingredientes = pd.DataFrame(columns=['Ingrediente', 'Quantidade'])
+
+    # Exibir a tabela de ingredientes
+    st.write('### Ingredientes')
+    st.write(df_ingredientes)
+
+    # Adicionar botão para adicionar novo ingrediente
+    if st.button('Adicionar Ingrediente'):
+        df_ingredientes.loc[len(df_ingredientes)] = ['','']
+
+    # Exibir campos de entrada para cada linha da tabela
+    for i in range(len(df_ingredientes)):
         ingrediente_nome = st.selectbox(f'Ingrediente {i+1}', obter_nomes_insumos())
         ingrediente_quantidade = st.number_input(f'Quantidade de {ingrediente_nome} (kg)', min_value=0.0, step=0.1)
-        ingredientes.append((ingrediente_nome, ingrediente_quantidade))
+        df_ingredientes.loc[i] = [ingrediente_nome, ingrediente_quantidade]
 
     if st.button('Cadastrar'):
         # Aqui você pode inserir o código para cadastrar a receita no banco de dados
         st.success('Receita cadastrada com sucesso!')
+
 
 
 def main():
