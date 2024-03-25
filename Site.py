@@ -83,7 +83,7 @@ def excluir_insumo(nome):
     c.execute('DELETE FROM insumos WHERE nome = ?', (nome,))
     conn.commit()
     conn.close()
-def excluir_insumo(nome):
+def excluir_receita(nome):
     conn = sqlite3.connect('estoque.db')
     c = conn.cursor()
     c.execute('DELETE FROM receita WHERE nome = ?', (nome,))
