@@ -39,7 +39,7 @@ def visualizar_itens_receita(nome_receita):
     else:
         st.write('### Itens da Receita')
 
-        for insumo, quantidade in data:
+        for receita_id, insumo_id, quantidade in data:
             st.write(f'{insumo} - {quantidade} kg')
 def limpar_receitas():
     conn = sqlite3.connect('estoque.db')
