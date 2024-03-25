@@ -201,44 +201,46 @@ def obter_id_insumo(nome):
 def main():
     st.title('Controle de Estoque')
 
-    # Primeira estratificação: Visualização do Estoque
-    with st.beta_expander("Visualização do Estoque"):
+    # Estratificação das abas
+    operacao = st.sidebar.radio('Operação', ['Visualizar Estoque', 'Movimentações', 'Cadastro', 'Formatação de Insumos'])
+
+    if operacao == 'Visualizar Estoque':
         visualizar_estoque()
 
-    # Segunda estratificação: Movimentações
-    with st.beta_expander("Movimentações"):
-        operacao = st.radio('Selecione a operação', ['Produzir Receita', 'Registrar Entrada', 'Registrar Saída'])
-        if operacao == 'Produzir Receita':
+    elif operacao == 'Movimentações':
+        sub_operacao = st.sidebar.radio('Selecione a operação', ['Produzir Receita', 'Registrar Entrada', 'Registrar Saída'])
+
+        if sub_operacao == 'Produzir Receita':
             produzir_receita()
-        elif operacao == 'Registrar Entrada':
+        elif sub_operacao == 'Registrar Entrada':
             nome = st.selectbox('Insumo', obter_nomes_insumos())
             quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
             if st.button('Registrar'):
                 entrada_insumo(nome, quantidade)
                 st.success('Entrada registrada com sucesso!')
-        elif operacao == 'Registrar Saída':
+        elif sub_operacao == 'Registrar Saída':
             nome = st.selectbox('Insumo', obter_nomes_insumos())
             quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
             if st.button('Registrar'):
                 saida_insumo(nome, quantidade)
                 st.success('Saída registrada com sucesso!')
 
-    # Terceira estratificação: Cadastro de Insumos e Receitas
-    with st.beta_expander("Cadastro"):
-        operacao = st.radio('Selecione a operação', ['Cadastrar Insumo', 'Cadastrar Receita'])
-        if operacao == 'Cadastrar Insumo':
-            nome = st.text_input('Nome do Insumo')
-            quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
-            if st.button('Cadastrar'):
-                cadastrar_insumo(nome, quantidade)
-                st.success('Insumo cadastrado com sucesso!')
-        elif operacao == 'Cadastrar Receita':
+    elif operacao == 'Cadastro':
+        sub_operacao = st.sidebar.radio('Selecione a operação', ['Cadastrar Insumo', 'Cadastrar Receita'])
+
+        if sub_operacao == 'Cadastrar Insumo':
+            operacao = st.radio('Selecione a operação', ['Cadastrar Insumo', 'Cadastrar Receita'])
+            if operacao == 'Cadastrar Insumo':
+                nome = st.text_input('Nome do Insumo')
+                quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
+                if st.button('Cadastrar'):
+                    cadastrar_insumo(nome, quantidade)
+                    st.success('Insumo cadastrado com sucesso!')
+        elif sub_operacao == 'Cadastrar Receita':
             cadastrar_receita()
 
-    # Quarta estratificação: Formatação de Insumos
-    with st.beta_expander("Configurações"):
+    elif operacao == 'Formatação de Insumos':
         formatar_insumos()
-
 
 if __name__ == '__main__':
     main()
