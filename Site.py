@@ -77,8 +77,6 @@ def visualizar_estoque():
         df['Quantidade'] = df['Quantidade'].astype(str) + ' kg'  # Adiciona "kg" à quantidade
         st.write(df)
 
-        st.write(df)
-
 def obter_nomes_insumos():
     conn = sqlite3.connect('estoque.db')
     c = conn.cursor()
