@@ -77,7 +77,28 @@ def cadastrar_receita():
         conn.close()
 
         st.success('Receita cadastrada com sucesso!')
+def excluir_insumo(nome):
+    conn = sqlite3.connect('estoque.db')
+    c = conn.cursor()
+    c.execute('DELETE FROM insumos WHERE nome = ?', (nome,))
+    conn.commit()
+    conn.close()
+def visualizar_insumos():
+    conn = sqlite3.connect('estoque.db')
+    c = conn.cursor()
+    c.execute('SELECT nome, quantidade FROM insumos')
+    data = c.fetchall()
+    conn.close()
 
+    if not data:
+        st.warning('Não há insumos cadastrados.')
+    else:
+        st.write('### Lista de Insumos')
+        for nome, quantidade in data:
+            st.write(f'{nome} - {quantidade} kg')
+            if st.button(f'Excluir {nome}'):
+                excluir_insumo(nome)
+                st.success(f'{nome} excluído com sucesso!')
 
 def entrada_insumo(nome, quantidade):
     conn = sqlite3.connect('estoque.db')
@@ -179,7 +200,7 @@ def obter_id_insumo(nome):
 def main():
     st.title('Controle de Estoque')
 
-    operacao = st.sidebar.radio('Operação', ['Visualizar Estoque', 'Cadastrar Insumo', 'Registrar Entrada', 'Registrar Saída', 'Cadastrar Receita','Produzir Receita'])
+    operacao = st.sidebar.radio('Operação', ['Visualizar Estoque', 'Cadastrar Insumo', 'Registrar Entrada', 'Registrar Saída', 'Cadastrar Receita','Produzir Receita', 'Formatar Insumos'])
 
     if operacao == 'Cadastrar Insumo':
         nome = st.text_input('Nome do Insumo')
@@ -207,8 +228,12 @@ def main():
 
     elif operacao == 'Cadastrar Receita':
         cadastrar_receita()
+      
     elif operacao == 'Produzir Receita':
         produzir_receita()
+    elif operacao == 'Formatar Insumos'
+        visualizar_insumos()
+
 
 if __name__ == '__main__':
     main()
