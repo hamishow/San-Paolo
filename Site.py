@@ -55,11 +55,27 @@ def obter_nomes_insumos():
     data = c.fetchall()
     conn.close()
     return [nome[0] for nome in data]
+def cadastrar_receita():
+    st.subheader('Cadastrar Receita')
+
+    nome_receita = st.text_input('Nome da Receita')
+    num_ingredientes = st.number_input('Número de Ingredientes', min_value=1, step=1)
+
+    ingredientes = []
+    for i in range(num_ingredientes):
+        ingrediente_nome = st.selectbox(f'Ingrediente {i+1}', obter_nomes_insumos())
+        ingrediente_quantidade = st.number_input(f'Quantidade de {ingrediente_nome} (kg)', min_value=0.0, step=0.1)
+        ingredientes.append((ingrediente_nome, ingrediente_quantidade))
+
+    if st.button('Cadastrar'):
+        # Aqui você pode inserir o código para cadastrar a receita no banco de dados
+        st.success('Receita cadastrada com sucesso!')
+
 
 def main():
     st.title('Controle de Estoque')
 
-    operacao = st.sidebar.radio('Operação', [ 'Visualizar Estoque', 'Cadastrar Insumo', 'Registrar Entrada', 'Registrar Saída'])
+    operacao = st.sidebar.radio('Operação', [ 'Visualizar Estoque', 'Cadastrar Insumo', 'Registrar Entrada', 'Registrar Saída', 'Cadastrar Receita'])
 
     if operacao == 'Cadastrar Insumo':
         nome = st.text_input('Nome do Insumo')
@@ -84,6 +100,9 @@ def main():
 
     elif operacao == 'Visualizar Estoque':
         visualizar_estoque()
+
+    elif operacao == 'Cadastrar Receita':
+        cadastrar_receita()
 
 
 if __name__ == '__main__':
