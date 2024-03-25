@@ -200,38 +200,46 @@ def obter_id_insumo(nome):
 def main():
     st.title('Controle de Estoque')
 
-    operacao = st.sidebar.selectbox('Operação', ['Visualizar Estoque', 'Cadastrar Insumo', 'Registrar Entrada', 'Registrar Saída', 'Cadastrar Receita','Produzir Receita', 'Formatar Insumos'])
-
-    if operacao == 'Cadastrar Insumo':
+    operacao = st.sidebar.selectbox('Estoque',
+                                    ['Visualizar Estoque'])
+    if operacao == 'Visualizar Estoque':
+        visualizar_estoque()
+        
+    cadastro == st.sidebar.selectbox('Cadastro',['Cadastrar Insumo',
+                                     'Cadastrar Receita'])
+    
+    if cadastro == 'Cadastrar Insumo':
         nome = st.text_input('Nome do Insumo')
         quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
         if st.button('Cadastrar'):
             cadastrar_insumo(nome, quantidade)
             st.success('Insumo cadastrado com sucesso!')
+            
+    elif cadastro == 'Cadastrar Receita':
+        cadastrar_receita()
+        
+    movimentacao == st.sidebar.selectbox('Movimentações',['Registrar Entrada', 'Registrar Saída', 'Produzir Receita'])
 
-    elif operacao == 'Registrar Entrada':
+    if movimentacao == 'Registrar Entrada':
         nome = st.selectbox('Insumo', obter_nomes_insumos())
         quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
         if st.button('Registrar'):
             entrada_insumo(nome, quantidade)
             st.success('Entrada registrada com sucesso!')
 
-    elif operacao == 'Registrar Saída':
+    elif movimentacao == 'Registrar Saída':
         nome = st.selectbox('Insumo', obter_nomes_insumos())
         quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
         if st.button('Registrar'):
             saida_insumo(nome, quantidade)
             st.success('Saída registrada com sucesso!')
 
-    elif operacao == 'Visualizar Estoque':
-        visualizar_estoque()
-
-    elif operacao == 'Cadastrar Receita':
-        cadastrar_receita()
-      
-    elif operacao == 'Produzir Receita':
+    elif movimentacao == 'Produzir Receita':
         produzir_receita()
-    elif operacao == 'Formatar Insumos':
+        
+    configuracao == st.sidebar.selectbox('Configurações',['Formatar Insumos'])
+    
+    if configuracao == 'Formatar Insumos':
         visualizar_insumos()
 
 
