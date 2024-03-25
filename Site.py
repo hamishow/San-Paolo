@@ -88,6 +88,7 @@ def cadastrar_receita():
         # Atualizar a quantidade de cada ingrediente na tabela de insumos
         for ingrediente in ingredientes:
             insumo_id = obter_id_insumo(ingrediente['nome'])
+            c.execute('INSERT OR IGNORE INTO insumos (id, nome, quantidade) VALUES (?, ?, ?)', (insumo_id, ingrediente['nome'], 0.0))
             c.execute('UPDATE insumos SET quantidade = quantidade + ? WHERE id = ?', (ingrediente['quantidade'], insumo_id))
 
         conn.commit()
