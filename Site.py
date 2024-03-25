@@ -200,10 +200,11 @@ def obter_id_insumo(nome):
 def main():
     st.title('Controle de Estoque')
 
-    operacao = st.sidebar.radio('Operação', ['Visualizar Estoque', 'Cadastrar', 'Movimentações', 'Configurações'])
+    operacao = st.sidebar.radio('Operação', ['Estoque', 'Cadastrar', 'Movimentações', 'Configurações'])
 
     if operacao == 'Visualizar Estoque':
-        with st.sidebar.radio('Visualizar Estoque'):
+        sub_operacao = st.sidebar.radio('Estoque',['Estoque']):
+        if sub_operacao == 'Estoque'
             visualizar_estoque()
 
     elif operacao == 'Cadastrar':
@@ -235,7 +236,8 @@ def main():
             produzir_receita()
 
     elif operacao == 'Configurações':
-        with st.sidebar.radio('Configurações'):
+        sub_op = st.sidebar.radio('Configurações', ['Configurações']):
+        if sub_op == 'Configurações'
             formatar_insumos()
 
 if __name__ == '__main__':
