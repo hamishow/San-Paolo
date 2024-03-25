@@ -39,28 +39,27 @@ def main():
 
     if operacao == 'Cadastrar Insumo':
         nome = st.text_input('Nome do Insumo')
-        quantidade = st.number_input('Quantidade', min_value=0)
+        quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
         if st.button('Cadastrar'):
             cadastrar_insumo(nome, quantidade)
             st.success('Insumo cadastrado com sucesso!')
 
     elif operacao == 'Registrar Entrada':
         nome = st.selectbox('Insumo', obter_nomes_insumos())
-        quantidade = st.number_input('Quantidade', min_value=0)
+        quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
         if st.button('Registrar'):
             entrada_insumo(nome, quantidade)
             st.success('Entrada registrada com sucesso!')
 
     elif operacao == 'Registrar Saída':
         nome = st.selectbox('Insumo', obter_nomes_insumos())
-        quantidade = st.number_input('Quantidade', min_value=0)
+        quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
         if st.button('Registrar'):
             saida_insumo(nome, quantidade)
             st.success('Saída registrada com sucesso!')
 
     elif operacao == 'Visualizar Estoque':
         visualizar_estoque()
-
 def visualizar_estoque():
     conn = sqlite3.connect('estoque.db')
     c = conn.cursor()
