@@ -202,7 +202,7 @@ def main():
 
     operacao = st.sidebar.radio('Operação', ['Estoque', 'Cadastrar', 'Movimentações', 'Configurações'])
 
-    if operacao == 'Visualizar Estoque':
+    if operacao == 'Estoque':
         sub_operacao = st.sidebar.radio('Estoque',['Estoque'])
         if sub_operacao == 'Estoque':
             visualizar_estoque()
