@@ -39,6 +39,14 @@ def entrada_insumo(nome, quantidade):
     c.execute('UPDATE insumos SET quantidade = quantidade + ? WHERE nome = ?', (quantidade, nome))
     conn.commit()
     conn.close()
+def obter_id_receita(nome_receita):
+    conn = sqlite3.connect('estoque.db')
+    c = conn.cursor()
+    c.execute('SELECT id FROM receitas WHERE nome = ?', (nome_receita,))
+    data = c.fetchone()
+    conn.close()
+    return data[0] if data else None
+
 
 def saida_insumo(nome, quantidade):
     conn = sqlite3.connect('estoque.db')
