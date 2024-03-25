@@ -85,15 +85,29 @@ def cadastrar_receita():
         c.execute('INSERT INTO receitas (nome) VALUES (?)', (nome_receita,))
         receita_id = c.lastrowid
 
-        # Atualizar a tabela de insumos
+        # Atualizar a quantidade de cada ingrediente na tabela de insumos
         for ingrediente in ingredientes:
             insumo_id = obter_id_insumo(ingrediente['nome'])
-            c.execute('INSERT INTO ingredientes (receita_id, insumo_id, quantidade) VALUES (?, ?, ?)', (receita_id, insumo_id, ingrediente['quantidade']))
+            c.execute('UPDATE insumos SET quantidade = quantidade + ? WHERE id = ?', (ingrediente['quantidade'], insumo_id))
 
         conn.commit()
         conn.close()
 
+        # Atualizar a tabela de insumos
+        conn = sqlite3.connect('estoque.db')
+        c = conn.cursor()
+        c.execute('SELECT nome, quantidade FROM insumos')
+        data = c.fetchall()
+        df_insumos = pd.DataFrame(data, columns=['Nome', 'Quantidade'])
+        df_ingredientes = pd.DataFrame(ingredientes)
+        df_merge = pd.merge(df_insumos, df_ingredientes, how='outer', left_on='Nome', right_on='nome')
+        df_merge['Quantidade'] = df_merge[['Quantidade_x', 'quantidade_y']].sum(axis=1)
+        df_merge = df_merge[['Nome', 'Quantidade']]
+        df_merge['Quantidade'] = df_merge['Quantidade'].astype(str) + ' kg'
+        st.write(df_merge)
+
         st.success('Receita cadastrada com sucesso!')
+
 
 def obter_id_insumo(nome):
     conn = sqlite3.connect('estoque.db')
