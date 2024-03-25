@@ -207,15 +207,15 @@ def obter_id_insumo(nome):
 def main():
     st.title('Controle de Estoque')
 
-    operacao = st.sidebar.radio('Operação', ['Estoque', 'Cadastrar', 'Movimentações', 'Configurações'])
+    operacao = st.sidebar.selectbox('Operação', ['Estoque', 'Cadastrar', 'Movimentações', 'Configurações'])
 
     if operacao == 'Estoque':
-        sub_operacao = st.sidebar.radio('Estoque',['Estoque'])
+        sub_operacao = st.sidebar.selectbox('Estoque',['Estoque'])
         if sub_operacao == 'Estoque':
             visualizar_estoque()
 
     elif operacao == 'Cadastrar':
-        sub_operacao = st.sidebar.radio('Cadastro', ['Cadastrar Insumo', 'Cadastrar Receita'])
+        sub_operacao = st.sidebar.selectbox('Cadastro', ['Cadastrar Insumo', 'Cadastrar Receita'])
         if sub_operacao == 'Cadastrar Insumo':
             nome = st.text_input('Nome do Insumo')
             quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
@@ -226,7 +226,7 @@ def main():
             cadastrar_receita()
 
     elif operacao == 'Movimentações':
-        sub_operacao = st.sidebar.radio('Movimentações', ['Registrar Entrada', 'Registrar Saída', 'Produzir Receita'])
+        sub_operacao = st.sidebar.selectbox('Movimentações', ['Registrar Entrada', 'Registrar Saída', 'Produzir Receita'])
         if sub_operacao == 'Registrar Entrada':
             nome = st.selectbox('Insumo', obter_nomes_insumos())
             quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
@@ -243,7 +243,7 @@ def main():
             produzir_receita()
 
     elif operacao == 'Configurações':
-        sub_op = st.sidebar.radio('Configurações', ['Configurações'])
+        sub_op = st.sidebar.selectbox('Configurações', ['Configurações'])
         if sub_op == 'Configurações':
             visualizar_insumos()
 
