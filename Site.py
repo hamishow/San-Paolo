@@ -48,6 +48,13 @@ def visualizar_estoque():
         df = pd.DataFrame(data, columns=['Nome', 'Quantidade'])
         df['Quantidade'] = df['Quantidade'].astype(str) + ' kg'  # Adiciona "kg" à quantidade
         st.write(df)
+def obter_nomes_insumos():
+    conn = sqlite3.connect('estoque.db')
+    c = conn.cursor()
+    c.execute('SELECT nome FROM insumos')
+    data = c.fetchall()
+    conn.close()
+    return [nome[0] for nome in data]
 
 def main():
     st.title('Controle de Estoque')
