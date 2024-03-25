@@ -139,7 +139,7 @@ def produzir_receita():
         # Atualizar a quantidade de cada insumo na tabela de insumos
         for detalhe in detalhes_receita:
             insumo_id, quantidade_por_receita = detalhe
-            quantidade_total = quantidade_por_receita * num_receitas * quantidade_produzida
+            quantidade_total = quantidade_por_receita * num_receitas
             c.execute('UPDATE insumos SET quantidade = quantidade - ? WHERE id = ?', (quantidade_total, insumo_id))
 
         # Adicionar a quantidade produzida à quantidade do insumo na tabela de insumos
