@@ -231,7 +231,7 @@ def main():
       
     elif operacao == 'Produzir Receita':
         produzir_receita()
-    elif operacao == 'Formatar Insumos'
+    elif operacao == 'Formatar Insumos':
         visualizar_insumos()
 
 
