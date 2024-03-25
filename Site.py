@@ -108,13 +108,14 @@ def produzir_receita():
             quantidade_total = quantidade_por_receita * num_receitas * quantidade_produzida
             c.execute('UPDATE insumos SET quantidade = quantidade - ? WHERE id = ?', (quantidade_total, insumo_id))
 
-        # Adicionar a quantidade produzida como um novo insumo na tabela de insumos
-        c.execute('INSERT INTO insumos (nome, quantidade) VALUES (?, ?)', (nome_receita, quantidade_produzida))
+        # Adicionar a quantidade produzida à quantidade do insumo na tabela de insumos
+        c.execute('UPDATE insumos SET quantidade = quantidade + ? WHERE nome = ?', (quantidade_produzida, nome_receita))
 
         conn.commit()
         conn.close()
 
         st.success(f'{num_receitas} receitas de {nome_receita} produzidas com sucesso!')
+
 
 def obter_id_insumo(nome):
     conn = sqlite3.connect('estoque.db')
@@ -127,7 +128,7 @@ def obter_id_insumo(nome):
 def main():
     st.title('Controle de Estoque')
 
-    operacao = st.sidebar.radio('Operação', ['Visualizar Estoque', 'Cadastrar Insumo', 'Registrar Entrada', 'Registrar Saída', 'Cadastrar Receita','produzir_receita'])
+    operacao = st.sidebar.radio('Operação', ['Visualizar Estoque', 'Cadastrar Insumo', 'Registrar Entrada', 'Registrar Saída', 'Cadastrar Receita','Produzir Receita'])
 
     if operacao == 'Cadastrar Insumo':
         nome = st.text_input('Nome do Insumo')
@@ -155,7 +156,7 @@ def main():
 
     elif operacao == 'Cadastrar Receita':
         cadastrar_receita()
-    elif operacao == 'produzir_receita':
+    elif operacao == 'Produzir Receita':
         produzir_receita()
 
 if __name__ == '__main__':
