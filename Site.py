@@ -244,7 +244,7 @@ def produzir_receita():
 def obter_id_insumo(nome):
     conn = sqlite3.connect('estoque.db')
     c = conn.cursor()
-    c.execute('SELECT id FROM insumos WHERE nome = ?', (nome,))
+    c.execute('SELECT nome FROM insumos WHERE nome = ?', (nome,))
     insumo_id = c.fetchone()[0]
     conn.close()
     return insumo_id
