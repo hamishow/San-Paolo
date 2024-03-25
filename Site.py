@@ -203,7 +203,7 @@ def main():
     operacao = st.sidebar.radio('Operação', ['Visualizar Estoque', 'Cadastrar', 'Movimentações', 'Configurações'])
 
     if operacao == 'Visualizar Estoque':
-        with st.sidebar.beta_expander('Visualizar Estoque'):
+        with st.sidebar.radio('Visualizar Estoque'):
             visualizar_estoque()
 
     elif operacao == 'Cadastrar':
@@ -235,7 +235,7 @@ def main():
             produzir_receita()
 
     elif operacao == 'Configurações':
-        with st.sidebar.beta_expander('Configurações'):
+        with st.sidebar.radio('Configurações'):
             formatar_insumos()
 
 if __name__ == '__main__':
