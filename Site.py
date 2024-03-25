@@ -75,6 +75,16 @@ def visualizar_estoque():
         for nome, quantidade in data:
             st.write(f'{nome}: {quantidade}')
 
+def obter_nomes_insumos():
+    conn = sqlite3.connect('estoque.db')
+    c = conn.cursor()
+    c.execute('SELECT nome FROM insumos')
+    data = c.fetchall()
+    conn.close()
+    return [nome[0] for nome in data]
+
+
+
 if __name__ == '__main__':
     main()
 
