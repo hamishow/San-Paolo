@@ -204,7 +204,7 @@ def main():
 
     if operacao == 'Visualizar Estoque':
         sub_operacao = st.sidebar.radio('Estoque',['Estoque'])
-        if sub_operacao == 'Estoque'
+        if sub_operacao == 'Estoque':
             visualizar_estoque()
 
     elif operacao == 'Cadastrar':
@@ -237,7 +237,7 @@ def main():
 
     elif operacao == 'Configurações':
         sub_op = st.sidebar.radio('Configurações', ['Configurações'])
-        if sub_op == 'Configurações'
+        if sub_op == 'Configurações':
             formatar_insumos()
 
 if __name__ == '__main__':
