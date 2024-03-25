@@ -200,48 +200,51 @@ def obter_id_insumo(nome):
 def main():
     st.title('Controle de Estoque')
 
-    operacao = st.sidebar.selectbox('Estoque',
-                                    ['Visualizar Estoque'])
-    if operacao == 'Visualizar Estoque':
+    # Visualizar Estoque
+    with st.sidebar.beta_expander('Visualizar Estoque'):
         visualizar_estoque()
-        
-    cadastro = st.sidebar.selectbox('Cadastro',['Cadastrar Insumo',
-                                     'Cadastrar Receita'])
-    
-    if cadastro == 'Cadastrar Insumo':
-        nome = st.text_input('Nome do Insumo')
-        quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
-        if st.button('Cadastrar'):
-            cadastrar_insumo(nome, quantidade)
-            st.success('Insumo cadastrado com sucesso!')
-            
-    elif cadastro == 'Cadastrar Receita':
-        cadastrar_receita()
-        
-    movimentacao = st.sidebar.selectbox('Movimentações',['Registrar Entrada', 'Registrar Saída', 'Produzir Receita'])
 
-    if movimentacao == 'Registrar Entrada':
-        nome = st.selectbox('Insumo', obter_nomes_insumos())
-        quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
-        if st.button('Registrar'):
-            entrada_insumo(nome, quantidade)
-            st.success('Entrada registrada com sucesso!')
+    # Cadastro
+    with st.sidebar.beta_expander('Cadastro'):
+        cadastro = st.selectbox('Selecione a opção', ['Cadastrar Insumo', 'Cadastrar Receita'])
 
-    elif movimentacao == 'Registrar Saída':
-        nome = st.selectbox('Insumo', obter_nomes_insumos())
-        quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
-        if st.button('Registrar'):
-            saida_insumo(nome, quantidade)
-            st.success('Saída registrada com sucesso!')
+        if cadastro == 'Cadastrar Insumo':
+            nome = st.text_input('Nome do Insumo')
+            quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
+            if st.button('Cadastrar'):
+                cadastrar_insumo(nome, quantidade)
+                st.success('Insumo cadastrado com sucesso!')
 
-    elif movimentacao == 'Produzir Receita':
-        produzir_receita()
-        
-    configuracao = st.sidebar.selectbox('Configurações',['Formatar Insumos'])
-    
-    if configuracao == 'Formatar Insumos':
-        visualizar_insumos()
+        elif cadastro == 'Cadastrar Receita':
+            cadastrar_receita()
 
+    # Movimentações
+    with st.sidebar.beta_expander('Movimentações'):
+        movimentacao = st.selectbox('Selecione a opção', ['Registrar Entrada', 'Registrar Saída', 'Produzir Receita'])
+
+        if movimentacao == 'Registrar Entrada':
+            nome = st.selectbox('Insumo', obter_nomes_insumos())
+            quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
+            if st.button('Registrar'):
+                entrada_insumo(nome, quantidade)
+                st.success('Entrada registrada com sucesso!')
+
+        elif movimentacao == 'Registrar Saída':
+            nome = st.selectbox('Insumo', obter_nomes_insumos())
+            quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
+            if st.button('Registrar'):
+                saida_insumo(nome, quantidade)
+                st.success('Saída registrada com sucesso!')
+
+        elif movimentacao == 'Produzir Receita':
+            produzir_receita()
+
+    # Configurações
+    with st.sidebar.beta_expander('Configurações'):
+        configuracao = st.selectbox('Selecione a opção', ['Formatar Insumos'])
+
+        if configuracao == 'Formatar Insumos':
+            visualizar_insumos()
 
 if __name__ == '__main__':
     main()
