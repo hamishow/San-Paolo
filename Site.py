@@ -30,7 +30,7 @@ conn.close()
 def visualizar_itens_receita(nome_receita):
     conn = sqlite3.connect('estoque.db')
     c = conn.cursor()
-    c.execute('SELECT insumo, quantidade FROM detalhes_receitas WHERE receita_id = ?', (obter_id_receita(nome_receita),))
+    c.execute('SELECT receita_id, insumo_id, quantidade FROM detalhes_receitas WHERE receita_id = ?', (obter_id_receita(nome_receita),))
     data = c.fetchall()
     conn.close()
 
