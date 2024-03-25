@@ -37,45 +37,34 @@ def saida_insumo(nome, quantidade):
 def main():
     st.title('Controle de Estoque')
 
-    operacao = st.sidebar.selectbox('Operação', ['Visualizar Estoque', 'Registrar Entrada', 'Registrar Saída', 'Cadastrar Insumo'])
+    opcao_cadastrar = st.button('Cadastrar Insumo')
+    opcao_entrada = st.button('Registrar Entrada')
+    opcao_saida = st.button('Registrar Saída')
+    opcao_visualizar = st.button('Visualizar Estoque')
 
-    if operacao == 'Cadastrar Insumo':
+    if opcao_cadastrar:
         nome = st.text_input('Nome do Insumo')
         quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
         if st.button('Cadastrar'):
             cadastrar_insumo(nome, quantidade)
             st.success('Insumo cadastrado com sucesso!')
 
-    elif operacao == 'Registrar Entrada':
+    elif opcao_entrada:
         nome = st.selectbox('Insumo', obter_nomes_insumos())
         quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
         if st.button('Registrar'):
             entrada_insumo(nome, quantidade)
             st.success('Entrada registrada com sucesso!')
 
-    elif operacao == 'Registrar Saída':
+    elif opcao_saida:
         nome = st.selectbox('Insumo', obter_nomes_insumos())
         quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
         if st.button('Registrar'):
             saida_insumo(nome, quantidade)
             st.success('Saída registrada com sucesso!')
 
-    elif operacao == 'Visualizar Estoque':
+    elif opcao_visualizar:
         visualizar_estoque()
-def visualizar_estoque():
-    conn = sqlite3.connect('estoque.db')
-    c = conn.cursor()
-    c.execute('SELECT nome, quantidade FROM insumos')
-    data = c.fetchall()
-    conn.close()
-
-    if not data:
-        st.warning('Não há insumos cadastrados.')
-    else:
-        st.write('### Quantidade de Insumos')
-        df = pd.DataFrame(data, columns=['Nome', 'Quantidade'])
-        df['Quantidade'] = df['Quantidade'].astype(str) + ' kg'  # Adiciona "kg" à quantidade
-        st.write(df)
 
 def obter_nomes_insumos():
     conn = sqlite3.connect('estoque.db')
