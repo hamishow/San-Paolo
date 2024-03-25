@@ -35,7 +35,7 @@ def saida_insumo(nome, quantidade):
 def main():
     st.title('Controle de Estoque')
 
-    operacao = st.sidebar.selectbox('Operação', ['Cadastrar Insumo', 'Registrar Entrada', 'Registrar Saída'])
+    operacao = st.sidebar.selectbox('Operação', ['Cadastrar Insumo', 'Registrar Entrada', 'Registrar Saída', 'Visualizar Estoque'])
 
     if operacao == 'Cadastrar Insumo':
         nome = st.text_input('Nome do Insumo')
@@ -58,6 +58,24 @@ def main():
             saida_insumo(nome, quantidade)
             st.success('Saída registrada com sucesso!')
 
+    elif operacao == 'Visualizar Estoque':
+        visualizar_estoque()
+
+def visualizar_estoque():
+    conn = sqlite3.connect('estoque.db')
+    c = conn.cursor()
+    c.execute('SELECT nome, quantidade FROM insumos')
+    data = c.fetchall()
+    conn.close()
+
+    if not data:
+        st.warning('Não há insumos cadastrados.')
+    else:
+        st.write('### Quantidade de Insumos')
+        for nome, quantidade in data:
+            st.write(f'{nome}: {quantidade}')
+
 if __name__ == '__main__':
     main()
+
 
