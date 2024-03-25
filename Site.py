@@ -240,7 +240,7 @@ def main():
             cadastrar_receita()
 
     elif operacao == 'Configurações':
-        visualizar_insumos())
+        visualizar_insumos():
 
 if __name__ == '__main__':
     main()
