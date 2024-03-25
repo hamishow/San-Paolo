@@ -109,7 +109,7 @@ def visualizar_insumos():
 def visualizar_receitas():
     conn = sqlite3.connect('estoque.db')
     c = conn.cursor()
-    c.execute('SELECT nome, quantidade FROM receitas')
+    c.execute('SELECT nome FROM receitas')
     data = c.fetchall()
     conn.close()
 
