@@ -27,6 +27,20 @@ c.execute('DELETE FROM receitas WHERE id NOT IN (SELECT MIN(id) FROM receitas GR
 # Commit e fechar a conexão
 conn.commit()
 conn.close()
+def visualizar_itens_receita(nome_receita):
+    conn = sqlite3.connect('estoque.db')
+    c = conn.cursor()
+    c.execute('SELECT insumo, quantidade FROM detalhes_receitas WHERE receita_id = ?', (obter_id_receita(nome_receita),))
+    data = c.fetchall()
+    conn.close()
+
+    if not data:
+        st.warning('Não há itens cadastrados para esta receita.')
+    else:
+        st.write('### Itens da Receita')
+
+        for insumo, quantidade in data:
+            st.write(f'{insumo} - {quantidade} kg')
 def limpar_receitas():
     conn = sqlite3.connect('estoque.db')
     c = conn.cursor()
@@ -241,9 +255,12 @@ def main():
     operacao = st.sidebar.selectbox('Operação', ['Estoque', 'Cadastrar', 'Movimentações', 'Configurações'])
 
     if operacao == 'Estoque':
-        sub_operacao = st.sidebar.selectbox('Estoque',['Estoque'])
+        sub_operacao = st.sidebar.selectbox('Estoque',['Estoque', 'Receitas'])
         if sub_operacao == 'Estoque':
             visualizar_estoque()
+        if sub_operacao == 'Receitas':
+            nome_receita = st.selectbox('Selecione a Receita', obter_nomes_receitas())
+            visualizar_itens_receita(nome_receita)
 
     elif operacao == 'Cadastrar':
         sub_operacao = st.sidebar.selectbox('Cadastro', ['Cadastrar Insumo', 'Cadastrar Receita'])
