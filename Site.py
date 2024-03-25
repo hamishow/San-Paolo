@@ -37,7 +37,7 @@ def saida_insumo(nome, quantidade):
 def main():
     st.title('Controle de Estoque')
 
-    operacao = st.sidebar.selectbox('Operação', ['Cadastrar Insumo', 'Registrar Entrada', 'Registrar Saída', 'Visualizar Estoque'])
+    operacao = st.sidebar.selectbox('Operação', ['Visualizar Estoque', 'Registrar Entrada', 'Registrar Saída', 'Cadastrar Insumo'])
 
     if operacao == 'Cadastrar Insumo':
         nome = st.text_input('Nome do Insumo')
