@@ -20,12 +20,25 @@ c.execute('''CREATE TABLE IF NOT EXISTS receitas
               (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT)''')
 
 c.execute('''CREATE TABLE IF NOT EXISTS detalhes_receitas
-              (id INTEGER PRIMARY KEY AUTOINCREMENT, receita_id INTEGER, insumo_id INTEGER, quantidade REAL)''')
+              (id INTEGER PRIMARY KEY AUTOINCREMENT, receita_id INTEGER, insumo_id INTEGER, quantidade REAL)''')# Remover espaços em branco nos nomes das receitas
+c.execute('UPDATE receitas SET nome = TRIM(nome)')
+c.execute('DELETE FROM receitas WHERE id NOT IN (SELECT MIN(id) FROM receitas GROUP BY nome)')
 
 # Commit e fechar a conexão
 conn.commit()
 conn.close()
+def limpar_receitas():
+    conn = sqlite3.connect('estoque.db')
+    c = conn.cursor()
 
+    # Remover espaços em branco nos nomes das receitas
+    c.execute('UPDATE receitas SET nome = TRIM(nome)')
+
+    # Remover receitas duplicadas, mantendo apenas a primeira ocorrência
+    c.execute('DELETE FROM receitas WHERE id NOT IN (SELECT MIN(id) FROM receitas GROUP BY nome)')
+
+    conn.commit()
+    conn.close()
 def cadastrar_insumo(nome, quantidade):
     conn = sqlite3.connect('estoque.db')
     c = conn.cursor()
@@ -100,8 +113,12 @@ def visualizar_estoque():
     else:
         st.write('### Quantidade de Insumos')
         df = pd.DataFrame(data, columns=['Nome', 'Quantidade'])
-        df['Quantidade'] = df['Quantidade'].apply(lambda x: '{:.2f}'.format(x))  # Formata a quantidade para 2 casas decimais
+        df['Quantidade'] = df['Quantidade'].round(2)  # Arredonda a quantidade para duas casas decimais
         st.write(df)
+
+        if st.button('Limpar Receitas'):
+            limpar_receitas()
+            st.success('Receitas limpas com sucesso!')
 
 def obter_nomes_receitas():
     conn = sqlite3.connect('estoque.db')
