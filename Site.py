@@ -94,14 +94,18 @@ def visualizar_insumos():
         st.warning('Não há insumos cadastrados.')
     else:
         st.write('### Lista de Insumos')
-        for nome, quantidade in data:
-            col1, col2 = st.beta_columns(2)
-            col1.write(nome)
-            col2.write(f'{quantidade} kg')
-            if col2.button(f'Excluir {nome}'):
-                excluir_insumo(nome)
-                st.success(f'{nome} excluído com sucesso!')
 
+        # Campo de pesquisa
+        pesquisa = st.text_input('Pesquisar Insumo')
+
+        for nome, quantidade in data:
+            if pesquisa.lower() in nome.lower():
+                col1, col2 = st.columns([1, 2])  # Divide a linha em duas colunas
+                col1.write(nome)
+                col2.write(f'{quantidade} kg')
+                if col2.button(f'Excluir {nome}'):
+                    excluir_insumo(nome)
+                    st.success(f'{nome} excluído com sucesso!')
 
 def entrada_insumo(nome, quantidade):
     conn = sqlite3.connect('estoque.db')
