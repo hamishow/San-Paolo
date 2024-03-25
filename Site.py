@@ -227,14 +227,14 @@ def main():
             entrada_insumo(nome, quantidade)
             st.success('Entrada registrada com sucesso!')
 
-    elif movimentacao = 'Registrar Saída':
+    elif movimentacao == 'Registrar Saída':
         nome = st.selectbox('Insumo', obter_nomes_insumos())
         quantidade = st.number_input('Quantidade', min_value=0.0, step=0.1)
         if st.button('Registrar'):
             saida_insumo(nome, quantidade)
             st.success('Saída registrada com sucesso!')
 
-    elif movimentacao = 'Produzir Receita':
+    elif movimentacao == 'Produzir Receita':
         produzir_receita()
         
     configuracao = st.sidebar.selectbox('Configurações',['Formatar Insumos'])
