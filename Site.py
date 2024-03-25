@@ -200,7 +200,7 @@ def obter_id_insumo(nome):
 def main():
     st.title('Controle de Estoque')
 
-    operacao = st.sidebar.radio('Operação', ['Visualizar Estoque', 'Cadastrar Insumo', 'Registrar Entrada', 'Registrar Saída', 'Cadastrar Receita','Produzir Receita', 'Formatar Insumos'])
+    operacao = st.sidebar.button('Operação', ['Visualizar Estoque', 'Cadastrar Insumo', 'Registrar Entrada', 'Registrar Saída', 'Cadastrar Receita','Produzir Receita', 'Formatar Insumos'])
 
     if operacao == 'Cadastrar Insumo':
         nome = st.text_input('Nome do Insumo')
