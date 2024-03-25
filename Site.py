@@ -114,21 +114,23 @@ def visualizar_receitas():
     conn.close()
 
     if not data:
-        st.warning('Não há insumos cadastrados.')
+        st.warning('Não há receitas cadastradas.')
     else:
-        st.write('### Lista de Insumos')
+        st.write('### Lista de Receitas')
 
         # Campo de pesquisa
-        pesquisa = st.text_input('Pesquisar Insumo')
+        pesquisa = st.text_input('Pesquisar Receita')
 
-        for nome in data:
+        for nome_tupla in data:
+            nome = nome_tupla[0]  # Acessa o primeiro elemento da tupla (nome da receita)
             if pesquisa.lower() in nome.lower():
-                col1, col2, col3 = st.columns([1, 2,3])  # Divide a linha em duas colunas
+                col1, col2, col3 = st.columns([1, 2, 3])  # Divide a linha em três colunas
                 col1.write(nome)
-                col2.write(f'{quantidade} kg')
+                # Você pode adicionar aqui a exibição dos ingredientes da receita, se desejar
                 if col3.button(f'Excluir {nome}'):
-                    excluir_insumo(nome)
+                    excluir_receita(nome)
                     st.success(f'{nome} excluído com sucesso!')
+
 
 def entrada_insumo(nome, quantidade):
     conn = sqlite3.connect('estoque.db')
