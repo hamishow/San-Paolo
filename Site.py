@@ -95,10 +95,13 @@ def visualizar_insumos():
     else:
         st.write('### Lista de Insumos')
         for nome, quantidade in data:
-            st.write(f'{nome} - {quantidade} kg')
-            if st.button(f'Excluir {nome}'):
+            col1, col2 = st.beta_columns(2)
+            col1.write(nome)
+            col2.write(f'{quantidade} kg')
+            if col2.button(f'Excluir {nome}'):
                 excluir_insumo(nome)
                 st.success(f'{nome} excluído com sucesso!')
+
 
 def entrada_insumo(nome, quantidade):
     conn = sqlite3.connect('estoque.db')
