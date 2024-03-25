@@ -74,6 +74,9 @@ def visualizar_estoque():
     else:
         st.write('### Quantidade de Insumos')
         df = pd.DataFrame(data, columns=['Nome', 'Quantidade'])
+        df['Quantidade'] = df['Quantidade'].astype(str) + ' kg'  # Adiciona "kg" à quantidade
+        st.write(df)
+
         st.write(df)
 
 def obter_nomes_insumos():
