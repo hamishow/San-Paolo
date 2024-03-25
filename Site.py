@@ -100,8 +100,9 @@ def visualizar_estoque():
     else:
         st.write('### Quantidade de Insumos')
         df = pd.DataFrame(data, columns=['Nome', 'Quantidade'])
-        df['Quantidade'] = df['Quantidade'].astype(str) + ' kg'  # Adiciona "kg" à quantidade
+        df['Quantidade'] = df['Quantidade'].apply(lambda x: '{:.2f}'.format(x))  # Formata a quantidade para 2 casas decimais
         st.write(df)
+
 def obter_nomes_receitas():
     conn = sqlite3.connect('estoque.db')
     c = conn.cursor()
