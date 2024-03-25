@@ -238,7 +238,7 @@ def main():
     elif operacao == 'Configurações':
         sub_op = st.sidebar.radio('Configurações', ['Configurações'])
         if sub_op == 'Configurações':
-            formatar_insumos()
+            visualizar_insumos()
 
 if __name__ == '__main__':
     main()
