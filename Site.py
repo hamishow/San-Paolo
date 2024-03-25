@@ -200,7 +200,7 @@ def obter_id_insumo(nome):
 def main():
     st.title('Controle de Estoque')
 
-    operacao = st.sidebar.button('Estoque',
+    operacao = st.sidebar.selectbox('Estoque',
                                     ['Visualizar Estoque'])
     if operacao == 'Visualizar Estoque':
         visualizar_estoque()
