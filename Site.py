@@ -16,6 +16,11 @@ c.execute('''CREATE TABLE IF NOT EXISTS receitas
 
 c.execute('''CREATE TABLE IF NOT EXISTS ingredientes
              (id INTEGER PRIMARY KEY AUTOINCREMENT, receita_id INTEGER, insumo_id INTEGER, quantidade REAL)''')
+c.execute('''CREATE TABLE IF NOT EXISTS receitas
+              (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT)''')
+
+c.execute('''CREATE TABLE IF NOT EXISTS detalhes_receitas
+              (id INTEGER PRIMARY KEY AUTOINCREMENT, receita_id INTEGER, insumo_id INTEGER, quantidade REAL)''')
 
 # Commit e fechar a conexão
 conn.commit()
@@ -85,27 +90,16 @@ def cadastrar_receita():
         c.execute('INSERT INTO receitas (nome) VALUES (?)', (nome_receita,))
         receita_id = c.lastrowid
 
-        # Atualizar a quantidade de cada ingrediente na tabela de insumos
+        # Inserir os detalhes da receita na tabela detalhes_receitas
         for ingrediente in ingredientes:
             insumo_id = obter_id_insumo(ingrediente['nome'])
-            c.execute('INSERT OR IGNORE INTO insumos (id, nome, quantidade) VALUES (?, ?, ?)', (insumo_id, ingrediente['nome'], 0.0))
-            c.execute('UPDATE insumos SET quantidade = quantidade + ? WHERE id = ?', (ingrediente['quantidade'], insumo_id))
+            c.execute('INSERT INTO detalhes_receitas (receita_id, insumo_id, quantidade) VALUES (?, ?, ?)', (receita_id, insumo_id, ingrediente['quantidade']))
+
+        # Inserir a receita como um novo insumo na tabela de insumos
+        c.execute('INSERT INTO insumos (nome, quantidade) VALUES (?, ?)', (nome_receita, 0.0))
 
         conn.commit()
         conn.close()
-
-        # Atualizar a tabela de insumos
-        conn = sqlite3.connect('estoque.db')
-        c = conn.cursor()
-        c.execute('SELECT nome, quantidade FROM insumos')
-        data = c.fetchall()
-        df_insumos = pd.DataFrame(data, columns=['Nome', 'Quantidade'])
-        df_ingredientes = pd.DataFrame(ingredientes)
-        df_merge = pd.merge(df_insumos, df_ingredientes, how='outer', left_on='Nome', right_on='nome')
-        df_merge['Quantidade'] = df_merge[['Quantidade_x', 'quantidade_y']].sum(axis=1)
-        df_merge = df_merge[['Nome', 'Quantidade']]
-        df_merge['Quantidade'] = df_merge['Quantidade'].astype(str) + ' kg'
-        st.write(df_merge)
 
         st.success('Receita cadastrada com sucesso!')
 
