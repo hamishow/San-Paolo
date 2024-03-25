@@ -1,5 +1,7 @@
 import streamlit as st
 import sqlite3
+import pandas as pd
+
 
 # Criar a conexão com o banco de dados
 conn = sqlite3.connect('estoque.db')
@@ -71,8 +73,8 @@ def visualizar_estoque():
         st.warning('Não há insumos cadastrados.')
     else:
         st.write('### Quantidade de Insumos')
-        for nome, quantidade in data:
-            st.write(f'{nome}: {quantidade}')
+        df = pd.DataFrame(data, columns=['Nome', 'Quantidade'])
+        st.write(df)
 
 def obter_nomes_insumos():
     conn = sqlite3.connect('estoque.db')
