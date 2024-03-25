@@ -106,6 +106,29 @@ def visualizar_insumos():
                 if col3.button(f'Excluir {nome}'):
                     excluir_insumo(nome)
                     st.success(f'{nome} excluído com sucesso!')
+def visualizar_receitas():
+    conn = sqlite3.connect('estoque.db')
+    c = conn.cursor()
+    c.execute('SELECT nome, quantidade FROM receitas')
+    data = c.fetchall()
+    conn.close()
+
+    if not data:
+        st.warning('Não há insumos cadastrados.')
+    else:
+        st.write('### Lista de Insumos')
+
+        # Campo de pesquisa
+        pesquisa = st.text_input('Pesquisar Insumo')
+
+        for nome, quantidade in data:
+            if pesquisa.lower() in nome.lower():
+                col1, col2, col3 = st.columns([1, 2,3])  # Divide a linha em duas colunas
+                col1.write(nome)
+                col2.write(f'{quantidade} kg')
+                if col3.button(f'Excluir {nome}'):
+                    excluir_insumo(nome)
+                    st.success(f'{nome} excluído com sucesso!')
 
 def entrada_insumo(nome, quantidade):
     conn = sqlite3.connect('estoque.db')
@@ -243,9 +266,11 @@ def main():
             produzir_receita()
 
     elif operacao == 'Configurações':
-        sub_op = st.sidebar.selectbox('Configurações', ['Configurações'])
-        if sub_op == 'Configurações':
+        sub_op = st.sidebar.selectbox('Configurações', ['Insumos','Receitas'])
+        if sub_op == 'Insumos':
             visualizar_insumos()
+        if sub_op == 'Receitas':
+            visualizar_receitas()
 
 if __name__ == '__main__':
     main()
