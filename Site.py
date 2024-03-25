@@ -2,18 +2,25 @@ import streamlit as st
 import sqlite3
 import pandas as pd
 
-
 # Criar a conexão com o banco de dados
 conn = sqlite3.connect('estoque.db')
 c = conn.cursor()
 
 # Criar a tabela de insumos
 c.execute('''CREATE TABLE IF NOT EXISTS insumos
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, quantidade INTEGER)''')
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, quantidade REAL)''')
+
+# Criar a tabela de receitas e ingredientes
+c.execute('''CREATE TABLE IF NOT EXISTS receitas
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT)''')
+
+c.execute('''CREATE TABLE IF NOT EXISTS ingredientes
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, receita_id INTEGER, insumo_id INTEGER, quantidade REAL)''')
 
 # Commit e fechar a conexão
 conn.commit()
 conn.close()
+
 def cadastrar_insumo(nome, quantidade):
     conn = sqlite3.connect('estoque.db')
     c = conn.cursor()
@@ -34,6 +41,7 @@ def saida_insumo(nome, quantidade):
     c.execute('UPDATE insumos SET quantidade = quantidade - ? WHERE nome = ?', (quantidade, nome))
     conn.commit()
     conn.close()
+
 def visualizar_estoque():
     conn = sqlite3.connect('estoque.db')
     c = conn.cursor()
@@ -48,6 +56,7 @@ def visualizar_estoque():
         df = pd.DataFrame(data, columns=['Nome', 'Quantidade'])
         df['Quantidade'] = df['Quantidade'].astype(str) + ' kg'  # Adiciona "kg" à quantidade
         st.write(df)
+
 def obter_nomes_insumos():
     conn = sqlite3.connect('estoque.db')
     c = conn.cursor()
@@ -55,38 +64,49 @@ def obter_nomes_insumos():
     data = c.fetchall()
     conn.close()
     return [nome[0] for nome in data]
+
 def cadastrar_receita():
     st.subheader('Cadastrar Receita')
 
     nome_receita = st.text_input('Nome da Receita')
 
-    # Criar um DataFrame vazio para armazenar os ingredientes
-    df_ingredientes = pd.DataFrame(columns=['Ingrediente', 'Quantidade'])
-
-    # Exibir a tabela de ingredientes
-    st.write('### Ingredientes')
-    st.write(df_ingredientes)
-
-    # Adicionar botão para adicionar novo ingrediente
-    if st.button('Adicionar Ingrediente'):
-        df_ingredientes.loc[len(df_ingredientes)] = ['','']
-
-    # Exibir campos de entrada para cada linha da tabela
-    for i in range(len(df_ingredientes)):
+    ingredientes = []
+    num_ingredientes = st.number_input('Número de Ingredientes', min_value=1, step=1)
+    for i in range(num_ingredientes):
         ingrediente_nome = st.selectbox(f'Ingrediente {i+1}', obter_nomes_insumos())
         ingrediente_quantidade = st.number_input(f'Quantidade de {ingrediente_nome} (kg)', min_value=0.0, step=0.1)
-        df_ingredientes.loc[i] = [ingrediente_nome, ingrediente_quantidade]
+        ingredientes.append({'nome': ingrediente_nome, 'quantidade': ingrediente_quantidade})
 
     if st.button('Cadastrar'):
-        # Aqui você pode inserir o código para cadastrar a receita no banco de dados
+        conn = sqlite3.connect('estoque.db')
+        c = conn.cursor()
+
+        # Inserir a receita na tabela receitas
+        c.execute('INSERT INTO receitas (nome) VALUES (?)', (nome_receita,))
+        receita_id = c.lastrowid
+
+        # Atualizar a tabela de insumos
+        for ingrediente in ingredientes:
+            insumo_id = obter_id_insumo(ingrediente['nome'])
+            c.execute('INSERT INTO ingredientes (receita_id, insumo_id, quantidade) VALUES (?, ?, ?)', (receita_id, insumo_id, ingrediente['quantidade']))
+
+        conn.commit()
+        conn.close()
+
         st.success('Receita cadastrada com sucesso!')
 
-
+def obter_id_insumo(nome):
+    conn = sqlite3.connect('estoque.db')
+    c = conn.cursor()
+    c.execute('SELECT id FROM insumos WHERE nome = ?', (nome,))
+    insumo_id = c.fetchone()[0]
+    conn.close()
+    return insumo_id
 
 def main():
     st.title('Controle de Estoque')
 
-    operacao = st.sidebar.radio('Operação', [ 'Visualizar Estoque', 'Cadastrar Insumo', 'Registrar Entrada', 'Registrar Saída', 'Cadastrar Receita'])
+    operacao = st.sidebar.radio('Operação', ['Visualizar Estoque', 'Cadastrar Insumo', 'Registrar Entrada', 'Registrar Saída', 'Cadastrar Receita'])
 
     if operacao == 'Cadastrar Insumo':
         nome = st.text_input('Nome do Insumo')
@@ -114,7 +134,6 @@ def main():
 
     elif operacao == 'Cadastrar Receita':
         cadastrar_receita()
-
 
 if __name__ == '__main__':
     main()
