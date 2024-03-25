@@ -32,6 +32,39 @@ def cadastrar_insumo(nome, quantidade):
     c.execute('INSERT INTO insumos (nome, quantidade) VALUES (?, ?)', (nome, quantidade))
     conn.commit()
     conn.close()
+def cadastrar_receita():
+    st.subheader('Cadastrar Receita')
+
+    nome_receita = st.text_input('Nome da Receita')
+
+    ingredientes = []
+    num_ingredientes = st.number_input('Número de Ingredientes', min_value=1, step=1)
+    for i in range(num_ingredientes):
+        ingrediente_nome = st.selectbox(f'Ingrediente {i+1}', obter_nomes_insumos())
+        ingrediente_quantidade = st.number_input(f'Quantidade de {ingrediente_nome} (kg)', min_value=0.0, step=0.1)
+        ingredientes.append({'nome': ingrediente_nome, 'quantidade': ingrediente_quantidade})
+
+    if st.button('Cadastrar'):
+        conn = sqlite3.connect('estoque.db')
+        c = conn.cursor()
+
+        # Inserir a receita na tabela receitas
+        c.execute('INSERT INTO receitas (nome) VALUES (?)', (nome_receita,))
+        receita_id = c.lastrowid
+
+        # Inserir os detalhes da receita na tabela detalhes_receitas
+        for ingrediente in ingredientes:
+            insumo_id = obter_id_insumo(ingrediente['nome'])
+            c.execute('INSERT INTO detalhes_receitas (receita_id, insumo_id, quantidade) VALUES (?, ?, ?)', (receita_id, insumo_id, ingrediente['quantidade']))
+
+        # Inserir a receita como um novo insumo na tabela de insumos
+        c.execute('INSERT INTO insumos (nome, quantidade) VALUES (?, ?)', (nome_receita, 0.0))
+
+        conn.commit()
+        conn.close()
+
+        st.success('Receita cadastrada com sucesso!')
+
 
 def entrada_insumo(nome, quantidade):
     conn = sqlite3.connect('estoque.db')
