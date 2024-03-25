@@ -239,8 +239,8 @@ def main():
         elif sub_operacao == 'Cadastrar Receita':
             cadastrar_receita()
 
-    elif operacao == 'Formatação de Insumos':
-        formatar_insumos()
+    elif operacao == 'Configurações':
+        visualizar_insumos())
 
 if __name__ == '__main__':
     main()
