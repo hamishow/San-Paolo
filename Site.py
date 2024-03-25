@@ -70,39 +70,35 @@ def obter_nomes_insumos():
     conn.close()
     return [nome[0] for nome in data]
 
-def cadastrar_receita():
-    st.subheader('Cadastrar Receita')
+def produzir_receita():
+    st.subheader('Produção de Receita')
 
-    nome_receita = st.text_input('Nome da Receita')
+    nome_receita = st.selectbox('Selecione a Receita', obter_nomes_receitas())
 
-    ingredientes = []
-    num_ingredientes = st.number_input('Número de Ingredientes', min_value=1, step=1)
-    for i in range(num_ingredientes):
-        ingrediente_nome = st.selectbox(f'Ingrediente {i+1}', obter_nomes_insumos())
-        ingrediente_quantidade = st.number_input(f'Quantidade de {ingrediente_nome} (kg)', min_value=0.0, step=0.1)
-        ingredientes.append({'nome': ingrediente_nome, 'quantidade': ingrediente_quantidade})
+    quantidade_produzida = st.number_input('Quantidade Produzida (kg)', min_value=0.0, step=0.1)
+    num_receitas = st.number_input('Número de Receitas Feitas', min_value=1, step=1)
 
-    if st.button('Cadastrar'):
+    if st.button('Produzir'):
         conn = sqlite3.connect('estoque.db')
         c = conn.cursor()
 
-        # Inserir a receita na tabela receitas
-        c.execute('INSERT INTO receitas (nome) VALUES (?)', (nome_receita,))
-        receita_id = c.lastrowid
+        # Obter os detalhes da receita
+        c.execute('SELECT insumo_id, quantidade FROM detalhes_receitas WHERE receita_id = ?', (obter_id_receita(nome_receita),))
+        detalhes_receita = c.fetchall()
 
-        # Inserir os detalhes da receita na tabela detalhes_receitas
-        for ingrediente in ingredientes:
-            insumo_id = obter_id_insumo(ingrediente['nome'])
-            c.execute('INSERT INTO detalhes_receitas (receita_id, insumo_id, quantidade) VALUES (?, ?, ?)', (receita_id, insumo_id, ingrediente['quantidade']))
+        # Atualizar a quantidade de cada insumo na tabela de insumos
+        for detalhe in detalhes_receita:
+            insumo_id, quantidade_por_receita = detalhe
+            quantidade_total = quantidade_por_receita * num_receitas * quantidade_produzida
+            c.execute('UPDATE insumos SET quantidade = quantidade - ? WHERE id = ?', (quantidade_total, insumo_id))
 
-        # Inserir a receita como um novo insumo na tabela de insumos
-        c.execute('INSERT INTO insumos (nome, quantidade) VALUES (?, ?)', (nome_receita, 0.0))
+        # Adicionar a quantidade produzida como um novo insumo na tabela de insumos
+        c.execute('INSERT INTO insumos (nome, quantidade) VALUES (?, ?)', (nome_receita, quantidade_produzida))
 
         conn.commit()
         conn.close()
 
-        st.success('Receita cadastrada com sucesso!')
-
+        st.success(f'{num_receitas} receitas de {nome_receita} produzidas com sucesso!')
 
 def obter_id_insumo(nome):
     conn = sqlite3.connect('estoque.db')
@@ -115,7 +111,7 @@ def obter_id_insumo(nome):
 def main():
     st.title('Controle de Estoque')
 
-    operacao = st.sidebar.radio('Operação', ['Visualizar Estoque', 'Cadastrar Insumo', 'Registrar Entrada', 'Registrar Saída', 'Cadastrar Receita'])
+    operacao = st.sidebar.radio('Operação', ['Visualizar Estoque', 'Cadastrar Insumo', 'Registrar Entrada', 'Registrar Saída', 'Cadastrar Receita','produzir_receita'])
 
     if operacao == 'Cadastrar Insumo':
         nome = st.text_input('Nome do Insumo')
@@ -143,6 +139,8 @@ def main():
 
     elif operacao == 'Cadastrar Receita':
         cadastrar_receita()
+    elif operacao == 'produzir_receita':
+        produzir_receita()
 
 if __name__ == '__main__':
     main()
