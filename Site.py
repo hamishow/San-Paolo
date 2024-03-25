@@ -121,7 +121,7 @@ def visualizar_receitas():
         # Campo de pesquisa
         pesquisa = st.text_input('Pesquisar Insumo')
 
-        for nome, quantidade in data:
+        for nome in data:
             if pesquisa.lower() in nome.lower():
                 col1, col2, col3 = st.columns([1, 2,3])  # Divide a linha em duas colunas
                 col1.write(nome)
