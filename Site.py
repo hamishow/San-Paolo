@@ -1,6 +1,8 @@
 import streamlit as st
 import sqlite3
 import pandas as pd
+from datetime import datetime
+
 
 # Criar a conexão com o banco de dados
 conn = sqlite3.connect('estoque.db')
