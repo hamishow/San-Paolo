@@ -10,6 +10,16 @@ c = conn.cursor()
 c.execute('''CREATE TABLE IF NOT EXISTS insumos
              (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, quantidade REAL)''')
 
+# Criar a tabela de pedidos
+c.execute('''CREATE TABLE IF NOT EXISTS pedidos
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT)''')
+
+# Criar a tabela de detalhes de pedidos
+c.execute('''CREATE TABLE IF NOT EXISTS detalhes_pedidos
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, pedido_id INTEGER, receita_id INTEGER, quantidade INTEGER,
+             FOREIGN KEY (pedido_id) REFERENCES pedidos(id),
+             FOREIGN KEY (receita_id) REFERENCES receitas(id))''')
+
 # Criar a tabela de receitas e ingredientes
 c.execute('''CREATE TABLE IF NOT EXISTS receitas
              (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT)''')
@@ -59,6 +69,35 @@ def cadastrar_insumo(nome, quantidade):
     c.execute('INSERT INTO insumos (nome, quantidade) VALUES (?, ?)', (nome, quantidade))
     conn.commit()
     conn.close()
+def cadastrar_pedido(receitas_quantidades):
+    conn = sqlite3.connect('estoque.db')
+    c = conn.cursor()
+
+    # Inserir o pedido na tabela de pedidos
+    c.execute('INSERT INTO pedidos (data) VALUES (?)', (datetime.now().strftime('%Y-%m-%d %H:%M:%S'),))
+    pedido_id = c.lastrowid
+
+    # Inserir as receitas associadas ao pedido na tabela de detalhes de pedidos
+    for receita, quantidade in receitas_quantidades.items():
+        c.execute('INSERT INTO detalhes_pedidos (pedido_id, receita_id, quantidade) VALUES (?, ?, ?)', (pedido_id, obter_id_receita(receita), quantidade))
+
+    conn.commit()
+    conn.close()
+def gestao_pedidos():
+    st.title('Gestão de Pedidos')
+
+    # Dicionário para armazenar a quantidade de cada receita
+    receitas_quantidades = {}
+    num_receitas = st.number_input('Número de Receitas', min_value=1, step=1)
+    for i in range(num_receitas):
+        receita = st.selectbox(f'Receita {i+1}', obter_nomes_receitas())
+        quantidade = st.number_input(f'Quantidade de {receita}', min_value=1, step=1)
+        receitas_quantidades[receita] = quantidade
+
+    if st.button('Cadastrar Pedido'):
+        cadastrar_pedido(receitas_quantidades)
+        st.success('Pedido cadastrado com sucesso!')
+
 def cadastrar_receita():
     st.subheader('Cadastrar Receita')
 
@@ -252,7 +291,7 @@ def obter_id_insumo(nome):
 def main():
     st.title('Controle de Estoque')
 
-    operacao = st.sidebar.selectbox('Operação', ['Estoque', 'Cadastrar', 'Movimentações', 'Configurações'])
+    operacao = st.sidebar.selectbox('Operação', ['Estoque', 'Cadastrar', 'Movimentações', 'Configurações', 'Pedidos'])
 
     if operacao == 'Estoque':
         sub_operacao = st.sidebar.selectbox('Estoque',['Estoque', 'Receitas'])
@@ -296,6 +335,10 @@ def main():
             visualizar_insumos()
         if sub_op == 'Receitas':
             visualizar_receitas()
+    elif operacao == 'Pedidos':
+        sub_op = st.sidebar.selectbox('Pedidos', ['Cadastrar Pedido','Gestão de Pedido'
+        if sub_op == 'Cadastrar Pedido'
+            gestao_pedidos()
 
 if __name__ == '__main__':
     main()
