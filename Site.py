@@ -388,7 +388,7 @@ def main():
         if sub_op == 'Receitas':
             visualizar_receitas()
     elif operacao == 'Pedidos':
-        sub_op = st.sidebar.selectbox('Pedidos', ['Cadastrar Pedido','Gestão de Pedido', 'Excluir Todos os Pedidos':])
+        sub_op = st.sidebar.selectbox('Pedidos', ['Cadastrar Pedido','Gestão de Pedido', 'Excluir Todos os Pedidos'])
         if sub_op == 'Cadastrar Pedido':
             gestao_pedidos()
         elif sub_op == 'Gestão de Pedido'
