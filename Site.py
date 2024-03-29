@@ -62,6 +62,7 @@ def calcular_insumos_pedidos():
                  FROM detalhes_pedidos
                  GROUP BY receita_id''')
     data = c.fetchall()
+  
 
     # Calcular a quantidade total de insumos necessária
     insumos_necessarios = {}
@@ -88,6 +89,14 @@ def excluir_pedidos():
 
     conn.commit()
     conn.close()
+def obter_nome_insumo(insumo_id):
+    conn = sqlite3.connect('estoque.db')
+    c = conn.cursor()
+    c.execute('SELECT nome FROM insumos WHERE id = ?', (insumo_id,))
+    nome = c.fetchone()[0]
+    conn.close()
+    return nome
+
 
 def limpar_receitas():
     conn = sqlite3.connect('estoque.db')
