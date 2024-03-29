@@ -51,6 +51,42 @@ def visualizar_itens_receita(nome_receita):
 
         for receita_id, insumo_id, quantidade in data:
             st.write(f'{receita_id} - {insumo_id} - {quantidade} kg')
+def calcular_insumos_pedidos():
+    conn = sqlite3.connect('estoque.db')
+    c = conn.cursor()
+
+    # Selecionar todas as receitas dos pedidos
+    c.execute('''SELECT receita_id, SUM(quantidade) AS total_receita
+                 FROM detalhes_pedidos
+                 GROUP BY receita_id''')
+    data = c.fetchall()
+
+    # Calcular a quantidade total de insumos necessária
+    insumos_necessarios = {}
+    for receita_id, quantidade in data:
+        c.execute('SELECT insumo_id, quantidade FROM detalhes_receitas WHERE receita_id = ?', (receita_id,))
+        detalhes_receita = c.fetchall()
+        for insumo_id, quantidade_receita in detalhes_receita:
+            if insumo_id in insumos_necessarios:
+                insumos_necessarios[insumo_id] += quantidade_receita * quantidade
+            else:
+                insumos_necessarios[insumo_id] = quantidade_receita * quantidade
+
+    conn.close()
+
+    return insumos_necessarios
+
+def excluir_pedidos():
+    conn = sqlite3.connect('estoque.db')
+    c = conn.cursor()
+
+    # Excluir todos os pedidos
+    c.execute('DELETE FROM pedidos')
+    c.execute('DELETE FROM detalhes_pedidos')
+
+    conn.commit()
+    conn.close()
+
 def limpar_receitas():
     conn = sqlite3.connect('estoque.db')
     c = conn.cursor()
@@ -212,6 +248,22 @@ def saida_insumo(nome, quantidade):
     c.execute('UPDATE insumos SET quantidade = quantidade - ? WHERE nome = ?', (quantidade, nome))
     conn.commit()
     conn.close()
+def visualizar_insumos_necessarios():
+    st.title('Insumos Necessários para Produzir Pedidos')
+
+    insumos_necessarios = calcular_insumos_pedidos()
+
+    if not insumos_necessarios:
+        st.warning('Não há insumos necessários.')
+    else:
+        st.write('### Insumos Necessários')
+        for insumo_id, quantidade in insumos_necessarios.items():
+            nome_insumo = obter_nome_insumo(insumo_id)
+            st.write(f'{nome_insumo} - {quantidade} kg')
+
+    if st.button('Excluir Todos os Pedidos'):
+        excluir_pedidos()
+        st.success('Todos os pedidos foram excluídos com sucesso!')
 
 def visualizar_estoque():
     conn = sqlite3.connect('estoque.db')
@@ -336,9 +388,15 @@ def main():
         if sub_op == 'Receitas':
             visualizar_receitas()
     elif operacao == 'Pedidos':
-        sub_op = st.sidebar.selectbox('Pedidos', ['Cadastrar Pedido','Gestão de Pedido'])
+        sub_op = st.sidebar.selectbox('Pedidos', ['Cadastrar Pedido','Gestão de Pedido', 'Excluir Todos os Pedidos':])
         if sub_op == 'Cadastrar Pedido':
             gestao_pedidos()
+        elif sub_op == 'Gestão de Pedido'
+            visualizar_insumos_necessarios()
+        elif opcao_gestao_pedidos == 'Excluir Todos os Pedidos':
+            if st.button('Excluir Todos os Pedidos'):
+                excluir_pedidos()
+                st.success('Todos os pedidos foram excluídos com sucesso!')
 
 if __name__ == '__main__':
     main()
