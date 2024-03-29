@@ -391,7 +391,7 @@ def main():
         sub_op = st.sidebar.selectbox('Pedidos', ['Cadastrar Pedido','Gestão de Pedido', 'Excluir Todos os Pedidos'])
         if sub_op == 'Cadastrar Pedido':
             gestao_pedidos()
-        elif sub_op == 'Gestão de Pedido'
+        elif sub_op == 'Gestão de Pedido':
             visualizar_insumos_necessarios()
         elif opcao_gestao_pedidos == 'Excluir Todos os Pedidos':
             if st.button('Excluir Todos os Pedidos'):
